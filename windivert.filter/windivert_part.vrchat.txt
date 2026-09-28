@@ -1,0 +1,17 @@
+outbound and
+(udp.DstPort = 5055 or udp.DstPort = 5056 or udp.DstPort = 27001 or udp.DstPort = 27002) and
+(
+    (udp.PayloadLength = 56 and
+     udp.Payload32[0] = 0xffff0001 and
+     udp.Payload32[3] = 0x02ff0104) or
+
+    (udp.PayloadLength = 32 and
+     udp.Payload[13] = 0xff and
+     udp.Payload[14] = 0x00 and
+     udp.Payload[15] = 0x04 and
+     udp.Payload32[4] = 0x00000014) or
+
+    (udp.PayloadLength = 1196 and
+     udp.Payload32[3] = 0x08000104 and
+     udp.Payload32[11] = 0x504f5354)
+)
