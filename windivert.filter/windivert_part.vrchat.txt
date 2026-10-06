@@ -12,6 +12,5 @@ outbound and
      udp.Payload32[4] = 0x00000014) or
 
     (udp.PayloadLength = 1196 and
-     udp.Payload32[3] = 0x08000104 and
-     udp.Payload32[11] = 0x504f5354)
+     udp.Payload32[3] = 0x08000104)
 )
