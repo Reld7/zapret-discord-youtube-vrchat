@@ -12,7 +12,7 @@
 - Во все `.bat` файлы добавлена стратегия:
 
 ```
---filter-udp=5055,5056,27001,27002 --dpi-desync=fake --dpi-desync-repeats=12 --dpi-desync-any-protocol=1 --dpi-desync-fake-unknown-udp="%BIN%quic_initial_quic_egress_yandex_net_no_kyber_ff.bin" --dpi-desync-cutoff=n4
+--filter-udp=5055,5056,27001,27002 --dpi-desync=fake --dpi-desync-repeats=12 --dpi-desync-any-protocol=1 --dpi-desync-fake-unknown-udp="%BIN%ACTIVE_GAME_UDP.bin" --dpi-desync-cutoff=n4
 ```
 
 ## Исполняемые файлы
