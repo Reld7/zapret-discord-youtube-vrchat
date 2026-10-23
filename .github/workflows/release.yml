@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (= .service/version.txt = LOCAL_VERSION в service.bat)'
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ github.event.inputs.tag }}
+      NAME: zapret-discord-youtube-vrchat-${{ github.event.inputs.tag }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify version
+        run: |
+          FILE_VERSION=$(tr -d '\r\n' < .service/version.txt)
+          SERVICE_VERSION=$(grep -m1 -oP '(?<=set "LOCAL_VERSION=)[^"]+' service.bat | tr -d '\r')
+          echo "tag=$TAG version.txt=$FILE_VERSION service.bat=$SERVICE_VERSION"
+          [ "$TAG" = "$FILE_VERSION" ] && [ "$TAG" = "$SERVICE_VERSION" ] || { echo "Version mismatch"; exit 1; }
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip rar
+
+      - name: Prepare release bundle
+        run: |
+          mkdir "$NAME"
+          cp -r bin lists utils windivert.filter "$NAME/"
+          cp *.bat "$NAME/"
+
+      - name: Create archives and checksums
+        run: |
+          zip -qr "$NAME.zip" "$NAME"
+          rar a -idq "$NAME.rar" "$NAME"
+          sha256sum "$NAME.zip" "$NAME.rar" | tee SHA256SUMS.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: ${{ env.TAG }}
+          generate_release_notes: true
+          files: |
+            ${{ env.NAME }}.zip
+            ${{ env.NAME }}.rar
+            SHA256SUMS.txt
