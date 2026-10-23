@@ -38,11 +38,10 @@ jobs:
           cp -r bin lists utils windivert.filter "$NAME/"
           cp *.bat "$NAME/"
 
-      - name: Create archives and checksums
+      - name: Create archives
         run: |
           zip -qr "$NAME.zip" "$NAME"
           rar a -idq "$NAME.rar" "$NAME"
-          sha256sum "$NAME.zip" "$NAME.rar" | tee SHA256SUMS.txt
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -53,4 +52,3 @@ jobs:
           files: |
             ${{ env.NAME }}.zip
             ${{ env.NAME }}.rar
-            SHA256SUMS.txt
